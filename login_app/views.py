@@ -30,10 +30,15 @@ class LoginApi(APIView):
         password=serializer.data['password']
         user_obj=authenticate(username=username,password=password)
         if user_obj:
-            token=Token.objects.get_or_create(user=user_obj)
+            #This line is used to either get an existing token or create a new one for a user.
+            #What Token.objects.get_or_create() does:
+            #It tries to find a token for the given user.# If it exists, it returns that token.If it doesn't exist, it creates a new token for the user and returns it.
+            # <Token: 05532483dbccff8de289ed59cee67786d3be8d34>
+            #so token.key returns 05532483dbccff8de289ed59cee67786d3be8d34
+            token,created=Token.objects.get_or_create(user=user_obj)
             return Response({
                 "status":True,
-                "token":str(token)
+                "token":token.key
             })
         
         return Response({
